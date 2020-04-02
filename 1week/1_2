@@ -1,0 +1,40 @@
+#include <stdio.h>
+#define MAX 1000
+void scan_num(int N, int counting);
+int rank_num(int large, int max, int number);
+void print_rank(int i, int N);
+int Number[MAX], Counting_num[MAX];
+
+int main() {
+	int N;
+	scanf("%d", &N);
+	scan_num(N, 0);
+	print_rank(0, N);
+	return 0;
+}
+
+void scan_num(int N, int counting) {
+
+	int num, count;
+	if (N == 0)
+		return;
+	scanf("%d", &Number[counting]);
+	scan_num(N - 1,counting+1);
+	Counting_num[counting] = rank_num(counting+N,Number[counting], 0);
+	
+}
+
+int rank_num(int large, int max, int number) {
+	if (large == 0)
+		return 0;
+	if (max > Number[number])
+		return 1 + rank_num(large-1, max, number+1);
+	else return rank_num(large-1, max, number+1);
+}
+
+void print_rank(int i, int N) {
+	if (i == N)
+		return;
+	printf("%d ", Counting_num[i]+1);
+	print_rank(i+1, N);
+}
