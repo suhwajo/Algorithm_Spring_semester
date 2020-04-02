@@ -1,0 +1,54 @@
+#include <stdio.h>
+#define MAX 1000
+int find_plus_start(int N, int data[], int K, int start, int end, int count);
+int middle_check(int data[], int end, int middle,int two);
+void scan_num(int N, int counting, int data[MAX]);
+
+int main() {
+	int data[MAX];
+	int N, K;
+	scanf("%d", &N);
+	scan_num(N, 0, data);
+	scanf("%d", &K);
+	int start = 0, end = N - 1;
+	int count = 0;
+	count += find_plus_start(N,data, K, start, end, count);
+
+	printf("%d\n", count);
+}
+void scan_num(int N, int counting,int data[]) {
+
+	int num, count;
+	if (N == 0)
+		return;
+	scanf("%d", &data[counting]);
+	scan_num(N - 1,counting+1, data);
+	
+}
+
+int find_plus_start(int N, int data[], int K, int start, int end, int count) {
+
+	int two = K - data[start] - data[end];
+	if (start == 0 && end == 1)
+		return count;
+	else if (start + 1 == end) {
+		count = find_plus_start(N, data, K, 0, end - 1, count);
+		return count;
+	}
+
+	count += middle_check(data,end, start+1,two);
+	count = find_plus_start(N, data, K, start + 1, end, count);
+
+	return count;
+
+}
+
+
+int middle_check(int data[], int end, int middle, int two){
+	int sum = data[middle] + two;
+	if (middle == end ||two<=0)
+		return 0;
+	if (two == data[middle])
+		return 1 + middle_check(data, end, middle + 1, two);
+	else return middle_check(data, end, middle + 1, two);
+}
