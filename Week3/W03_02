@@ -1,0 +1,61 @@
+#include<stdio.h>
+#define PATHWAY_COLOR 0
+#define WALL_COLOR 1
+#define VISITED_COLOR 2
+#define TURN_COLOR 3
+#define MAX 16
+int line[4][2] = {
+	{-1,0}, {0,1}, {1,0}, {0,-1} //0->up 1->right 2->down 3->left
+};
+int N, maze[MAX][MAX];
+bool find_maze(int x, int y, int init_dir);
+bool checking_maze(int x, int y, int init_dir);
+
+int main(){
+	scanf("%d", &N);
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++)
+			scanf("%d", &maze[i][j]);
+	}
+	if (find_maze(0, 0, 0))
+		printf("Yes");
+	else
+		printf("No");
+
+	return 0;
+}
+
+bool checking_maze(int x, int y, int init_dir) {
+	if (init_dir == 0 && (x - 1 < 0 || maze[x - 1][y] == WALL_COLOR))
+		return false;
+	else if (init_dir == 1 && (y + 1 > N - 1 || maze[x][y + 1] == WALL_COLOR))
+		return false;
+	else if (init_dir == 2 && (x + 1 > N - 1 || maze[x + 1][y] == WALL_COLOR))
+		return false;
+	else if (init_dir == 3 && (y - 1 < 0 || maze[x][y - 1] == WALL_COLOR))
+		return false;
+	return true;
+}
+
+bool find_maze(int x, int y, int init_dir){
+	if (x == N - 1 && y == N - 1)
+		return true;
+	else if (maze[x][y] == TURN_COLOR)
+		return false;
+	else if (checking_maze(x, y, init_dir)) {
+		maze[x][y] = VISITED_COLOR;
+		if (find_maze(x + line[init_dir][0], y + line[init_dir][1], init_dir))
+			return true;
+		return false;
+	}
+	else {
+		maze[x][y] = TURN_COLOR;
+		for (int i = 0; i < 4; i++) {
+			if (checking_maze(x, y, i)) {
+				if (find_maze(x + line[i][0], y + line[i][1], i))
+					return true;
+			}
+		}
+		return false;
+	}
+}
