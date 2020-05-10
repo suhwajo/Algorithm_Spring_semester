@@ -1,0 +1,56 @@
+#include <stdio.h>
+
+#define MAX 16
+#define PATHWAY_COLOUR 0 // white
+#define WALL_COLOUR 1 // blue
+#define PATH_COLOUR 3 // green
+
+int N, count = 0, path_num = -1, K;
+int maze[MAX][MAX];
+int findMazePath(int x, int y);
+
+int main() {
+	scanf("%d", &N);
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			scanf("%d", &maze[i][j]);
+		}
+	}
+	scanf("%d", &K);
+	printf("%d", findMazePath(0, 0));
+
+}
+int findMazePath(int x, int y) {
+	path_num++;
+	if (path_num > K) {
+		return 0;
+	}
+	if (x < 0 || y < 0 || x >= N || y >= N || maze[x][y] != PATHWAY_COLOUR) {
+		return 0;
+	}
+	else if (x == N - 1 && y == N - 1 && path_num<=K) {
+		count++;
+		return 1;
+	}
+	else {
+		maze[x][y] = PATH_COLOUR;
+		
+		if (findMazePath(x - 1, y) > 0) {
+			maze[x - 1][y] = 0;
+		}
+		path_num--;
+		if (findMazePath(x, y + 1) > 0) {
+			maze[x][y + 1] = 0;
+		}
+		path_num--;
+		if (findMazePath(x + 1, y) > 0) {
+			maze[x + 1][y] = 0;
+		}
+		path_num--;
+		if (findMazePath(x, y - 1) > 0) {
+			maze[x][y - 1] = 0;
+		}
+		path_num--;
+		return count;
+	}
+}
